@@ -1,9 +1,11 @@
 <!--
-  README: Finovaan landing (index.html)
-  - Save this file as: index.html
-  - Optional: place FINOVAAN-LOGO.svg into /assets or root (see comment below).
-  - Drop the files into Vercel (drag & drop) or push to a git repo and import in Vercel.
-  - Production-ready, responsive, accessible, SEO-friendly single-file landing page.
+  index.html — Finovaan landing (complete single-file)
+  - Save as: index.html
+  - Place assets in /assets:
+      - /assets/FINOVAAN-LOGO.png
+      - /assets/QR-PLACEHOLDER.png
+  - Deploy: push this repo to GitHub and import to Vercel (or drag & drop).
+  - IMPORTANT: do not change asset filenames unless you also update the <img src="..."> paths below.
 -->
 
 <!doctype html>
@@ -14,20 +16,26 @@
   <meta name="description" content="Finovaan — practical financial education, insights, and short-form content. Visit our channels to learn more." />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#0f172a" />
-  <!-- Canonical (replace href with your production URL) -->
   <link rel="canonical" href="https://example.com/" />
-  <!-- Favicons: add your favicons in /assets and uncomment -->
-  <!-- <link rel="icon" href="/assets/favicon.ico" /> -->
-  <!-- <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png"> -->
 
-  <!-- Structured Data (Organization) -->
+  <!-- Social meta (simple) -->
+  <meta property="og:site_name" content="Finovaan" />
+  <meta property="og:title" content="Finovaan — Financial clarity, fast." />
+  <meta property="og:description" content="Bite-sized lessons, practical analysis and curated insights about banking, personal finance and fintech." />
+  <meta property="og:type" content="website" />
+  <!-- Replace with your deployed URL -->
+  <meta property="og:url" content="https://example.com/" />
+  <meta property="og:image" content="https://example.com/assets/FINOVAAN-LOGO.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Structured Data for Organization -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "Finovaan",
     "url": "https://example.com/",
-    "logo": "https://example.com/FINOVAAN-LOGO.svg",
+    "logo": "https://example.com/assets/FINOVAAN-LOGO.png",
     "sameAs": [
       "https://www.linkedin.com/company/finovaan",
       "https://youtube.com/@finovaan",
@@ -37,436 +45,461 @@
   }
   </script>
 
-  <!-- Lightweight CSS: keep in style tag for single-file deploy; extract to style.css if preferred -->
+  <!--
+    Styles:
+    - Mobile-first
+    - CSS variables for theme and brand
+    - Accessible focus outlines and prefers-color-scheme support
+    - Expandable layout; feel free to extract to style.css for maintainability
+  -->
   <style>
-    /*
-      Finovaan Landing — Styles
-      - Brand colors in :root (change to update theme)
-      - Dark-mode respects prefers-color-scheme; toggled via [data-theme="dark"]
-    */
-
+    /* ==========================
+       Brand & Theme variables
+       ========================== */
     :root{
-      --bg: #0f172a; /* dark navy */
-      --card: #0b1220;
-      --muted: #9aa4b2;
-      --text: #e6eef8;
-      --accent-1: #6ee7b7; /* mint */
-      --accent-2: #60a5fa; /* sky */
-      --glow: linear-gradient(135deg,var(--accent-1),var(--accent-2));
+      /* Primary palette */
+      --bg: #0f172a;            /* page background (dark) */
+      --surface: #0b1220;       /* card background */
+      --muted: #98a4b6;         /* secondary text */
+      --text: #e6eef8;          /* primary text */
+      --accent-1: #6ee7b7;      /* mint */
+      --accent-2: #60a5fa;      /* sky */
+      --accent-grad: linear-gradient(135deg,var(--accent-1),var(--accent-2));
       --radius: 14px;
-      --shadow-1: 0 6px 18px rgba(2,6,23,0.6);
-      --glass: rgba(255,255,255,0.03);
-      --focus: 3px solid rgba(96,165,250,0.18);
-      --container-width: 1100px;
-      --transition: 180ms cubic-bezier(.2,.9,.3,1);
+      --card-shadow: 0 8px 32px rgba(2,6,23,0.6);
+      --glass: rgba(255,255,255,0.02);
+      --focus: 3px solid rgba(96,165,250,0.14);
+      --container: 1160px;
+      --ease: cubic-bezier(.2,.9,.3,1);
+      --space-xs:6px; --space-sm:10px; --space-md:16px; --space-lg:24px;
+      --max-content-width: 980px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
     }
 
-    /* Light theme overrides */
+    /* Light theme override — toggled by JS by adding data-theme="light" on <html> */
     :root[data-theme="light"]{
       --bg: #f6f8fb;
-      --card: #ffffff;
+      --surface: #ffffff;
       --muted: #475569;
       --text: #071124;
-      --shadow-1: 0 10px 24px rgba(12,18,37,0.06);
+      --card-shadow: 0 10px 30px rgba(12,18,37,0.06);
       --glass: rgba(8,15,25,0.02);
       --focus: 3px solid rgba(96,165,250,0.12);
     }
 
-    /* Base reset & accessibility */
-    *{box-sizing:border-box}
+    /* Respect user's system preference by default */
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme]) {
+        --bg: #f6f8fb;
+        --surface: #ffffff;
+        --muted: #475569;
+        --text: #071124;
+      }
+    }
+
+    /* ==========================
+       Reset & base
+       ========================== */
+    *,*::before,*::after{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: radial-gradient(800px 400px at 10% 10%, rgba(96,165,250,0.06), transparent),
-                  var(--bg);
-      color:var(--text);
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
+      background: radial-gradient(800px 360px at 8% 10%, rgba(96,165,250,0.03), transparent), var(--bg);
+      color:var(--text);
       line-height:1.45;
-      padding-top:48px; /* space for fixed header */
+      padding-top:64px; /* space for fixed header */
+      transition: background-color 220ms var(--ease), color 220ms var(--ease);
     }
+    img{max-width:100%;height:auto;display:block}
 
     a{color:inherit;text-decoration:none}
+    button{font-family:inherit}
 
-    /* Skip link */
+    /* Utility */
+    .container{width:100%;max-width:var(--container);margin:0 auto;padding:0 20px}
+    .row{display:flex;gap:var(--space-lg);flex-wrap:wrap}
+    .col{flex:1 1 0}
+
+    /* ==========================
+       Accessibility helpers
+       ========================== */
+    .sr-only{
+      position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+    }
     .skip-link{
-      position:fixed;
-      left:12px;
-      top:8px;
-      background:var(--accent-2);
-      color:#051023;
-      padding:8px 12px;
-      border-radius:8px;
-      z-index:9999;
-      transform:translateY(-120%);
-      transition:transform .18s;
+      position:fixed;left:12px;top:8px;background:var(--accent-2);color:#021026;padding:8px 12px;border-radius:8px;z-index:9999;transform:translateY(-130%);transition:transform .18s;
     }
     .skip-link:focus{transform:none;outline:none}
 
-    /* Header */
+    /* ==========================
+       Header / Nav
+       ========================== */
     header.site-header{
-      position:fixed;
-      inset:0 0 auto 0;
-      top:0;
-      z-index:1200;
-      display:flex;
-      align-items:center;
-      width:100%;
-      height:56px;
-      backdrop-filter: blur(6px);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
-      border-bottom:1px solid rgba(255,255,255,0.03);
+      position:fixed;inset:0 0 auto 0;top:0;z-index:1200;display:flex;align-items:center;height:64px;
+      background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);backdrop-filter: blur(8px);border-bottom:1px solid rgba(255,255,255,0.02)
     }
-    .container{width:100%;max-width:var(--container-width);margin:0 auto;padding:0 18px;display:flex;align-items:center;justify-content:space-between}
+    .site-header .container{display:flex;align-items:center;justify-content:space-between}
     .brand{display:flex;align-items:center;gap:12px}
-    .brand img{display:block;height:34px;width:auto}
-    .brand h1{font-size:16px;margin:0;font-weight:700;letter-spacing:0.2px}
+    .brand img{height:38px;width:auto;border-radius:6px}
+    .brand h1{font-size:18px;margin:0;font-weight:700;letter-spacing:-0.2px}
 
-    /* Nav */
-    nav.primary-nav{display:flex;align-items:center;gap:12px}
+    nav.primary{display:flex;gap:12px;align-items:center}
     .nav-actions{display:flex;gap:8px;align-items:center}
     .btn{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:10px;
-      background:transparent;border:1px solid transparent;
-      cursor:pointer;font-weight:600;font-size:14px;
-      transition:transform var(--transition), box-shadow var(--transition);
+      display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);
+      background:transparent;color:var(--text);cursor:pointer;font-weight:600;font-size:14px;transition:transform 160ms var(--ease),box-shadow 160ms var(--ease)
     }
-    .btn:focus{outline:none;box-shadow:var(--focus);border-color:transparent}
-    .btn.primary{
-      background:var(--glow);
-      color:#021026;
-      padding:10px 14px;
-      border-radius:12px;
-      box-shadow:0 6px 20px rgba(96,165,250,0.12);
-      border:1px solid rgba(255,255,255,0.06);
-    }
-    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06)}
-    .btn:active{transform:translateY(1px)}
+    .btn:focus{outline:none;box-shadow:var(--focus)}
+    .btn.primary{background:var(--accent-grad);color:#051026;padding:10px 14px;border-radius:12px}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04)}
 
-    /* Language & theme toggles */
-    .toggle-group{display:flex;gap:8px;align-items:center}
-    .lang-toggle, .theme-toggle{
-      background:var(--card);
-      border:1px solid rgba(255,255,255,0.03);
-      padding:6px 8px;border-radius:10px;font-size:13px;
-      cursor:pointer;
-    }
+    .lang-toggle,.theme-toggle{background:var(--surface);border:1px solid rgba(255,255,255,0.03);padding:6px 8px;border-radius:10px;font-size:13px;cursor:pointer}
     .lang-toggle[aria-pressed="true"], .theme-toggle[aria-pressed="true"]{box-shadow:var(--focus)}
 
-    /* Hero */
-    main{display:block;padding:36px 18px 64px;max-width:var(--container-width);margin:0 auto}
-    .hero{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:24px;
-      align-items:center;
-    }
-    .hero-inner{
-      background:var(--card);
-      border-radius:var(--radius);
-      padding:20px;
-      box-shadow:var(--shadow-1);
-      border:1px solid rgba(255,255,255,0.03);
-    }
-    .hero-title{font-size:22px;margin:0 0 8px;font-weight:700}
-    .hero-lead{margin:0 0 16px;color:var(--muted);max-width:60ch}
-    .hero-ctas{display:flex;gap:12px;flex-wrap:wrap}
+    /* mobile menu button */
+    #menuBtn{display:inline-flex;padding:8px 10px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.04)}
 
-    /* Social cards grid */
-    .social-grid{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:12px;
-      margin-top:18px;
-    }
+    /* ==========================
+       Main / Hero
+       ========================== */
+    main{padding:28px 20px 80px;max-width:var(--container);margin:0 auto}
+    .hero{display:grid;grid-template-columns:1fr;gap:20px;align-items:start}
+    .hero-card{background:var(--surface);border-radius:var(--radius);padding:22px;box-shadow:var(--card-shadow);border:1px solid rgba(255,255,255,0.02)}
+    .hero-title{font-size:24px;margin:0 0 10px;font-weight:800;color:var(--text)}
+    .hero-lead{margin:0 0 18px;color:var(--muted);font-size:15px;max-width:62ch}
+
+    .cta-group{display:flex;gap:12px;flex-wrap:wrap}
+    .cta-group .btn{font-weight:700}
+
+    /* Social grid */
+    .social-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}
     .social-card{
-      display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:var(--glass);
-      border:1px solid rgba(255,255,255,0.03);cursor:pointer;transition:transform var(--transition), box-shadow var(--transition);
-      text-decoration:none;color:var(--text);
+      display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:var(--glass);border:1px solid rgba(255,255,255,0.03);
+      transition:transform 180ms var(--ease),box-shadow 180ms var(--ease);cursor:pointer;color:var(--text)
     }
     .social-card:focus{outline:none;box-shadow:var(--focus)}
-    .social-card:hover{transform:translateY(-4px)}
-    .social-icon{width:42px;height:42px;flex:0 0 42px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent)}
+    .social-card:hover{transform:translateY(-6px)}
+    .social-icon{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent)}
     .social-meta{display:flex;flex-direction:column}
     .social-title{font-weight:700;font-size:14px}
     .social-sub{font-size:12px;color:var(--muted)}
 
-    /* QR & event card */
-    .event-card{display:flex;gap:14px;align-items:center;padding:12px;border-radius:12px;background:var(--card);border:1px solid rgba(255,255,255,0.03);box-shadow:var(--shadow-1)}
-    .qr{width:96px;height:96px;border-radius:8px;overflow:hidden;flex:0 0 96px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);display:grid;place-items:center}
-    .qr img{display:block;width:84px;height:84px}
+    /* ==========================
+       QR / Event card area
+       ========================== */
+    .event-card{display:flex;gap:16px;align-items:center;padding:12px;border-radius:12px;background:var(--surface);border:1px solid rgba(255,255,255,0.03);box-shadow:var(--card-shadow)}
+    .qr{width:100px;height:100px;border-radius:10px;overflow:hidden;flex:0 0 100px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);display:grid;place-items:center}
+    .qr img{display:block;width:84px;height:84px;border-radius:8px}
+    .quick-links{display:flex;gap:10px;margin-top:10px}
 
-    /* Footer */
-    footer.site-footer{margin-top:28px;padding:20px 0 56px;color:var(--muted);font-size:13px}
+    /* ==========================
+       About / Content blocks
+       ========================== */
+    .content-block{margin-top:18px;padding:18px;border-radius:12px;background:var(--surface);border:1px solid rgba(255,255,255,0.02);box-shadow:var(--card-shadow)}
+    .content-grid{display:grid;grid-template-columns:1fr;gap:12px}
+    .feature{padding:14px;border-radius:10px;background:var(--glass);border:1px solid rgba(255,255,255,0.03)}
+    .feature h4{margin:0 0 6px}
+    .feature p{margin:0;color:var(--muted);font-size:14px}
+
+    /* ==========================
+       Footer
+       ========================== */
+    footer.site-footer{margin-top:28px;padding:22px 0;color:var(--muted);font-size:13px}
     footer .footer-inner{display:flex;flex-direction:column;gap:12px;align-items:center}
+    footer .footer-links{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+    footer .small-logo{width:86px;height:auto;display:block;margin:0 auto 6px}
 
-    /* Responsive breakpoints */
+    /* ==========================
+       Responsive breakpoints
+       ========================== */
     @media(min-width:640px){
-      .hero{grid-template-columns: 1fr 360px;align-items:start}
+      .hero{grid-template-columns:1fr 360px;align-items:start;gap:20px}
       .social-grid{grid-template-columns:repeat(2,1fr)}
-      body{padding-top:64px}
-      .brand h1{font-size:18px}
+      body{padding-top:72px}
     }
-    @media(min-width:1024px){
-      .hero-inner{padding:28px}
+    @media(min-width:900px){
       .social-grid{grid-template-columns:repeat(4,1fr)}
-      .brand img{height:40px}
-      .hero-title{font-size:28px}
-      .hero-lead{font-size:15px}
+      .content-grid{grid-template-columns:repeat(3,1fr)}
+    }
+    @media(min-width:1200px){
+      main{padding-left:0;padding-right:0}
     }
 
-    /* Utility: visually hidden */
-    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    /* small tweaks */
+    .muted{color:var(--muted)}
+    .kbd{font-family:var(--mono);font-size:12px;padding:4px 8px;border-radius:6px;background:rgba(0,0,0,0.08);display:inline-block}
   </style>
 </head>
 <body>
-  <!-- Skip to content (keyboard) -->
+  <!-- Skip link for keyboard users -->
   <a class="skip-link" href="#main-content">Skip to content</a>
 
   <!-- Header -->
-  <header class="site-header" role="banner" aria-label="Top header">
+  <header class="site-header" role="banner" aria-label="Site header">
     <div class="container">
-      <div class="brand" role="img" aria-label="Finovaan logo and name">
-        <!-- Replace FINOVAAN-LOGO.svg with your branded SVG/PNG in /assets or root.
-             Example paths: /assets/FINOVAAN-LOGO.svg or /FINOVAAN-LOGO.svg
-             Keep alt text descriptive. -->
-        <img src="FINOVAAN-LOGO.svg" alt="Finovaan logo (replace FINOVAAN-LOGO.svg)" width="120" height="34" loading="lazy">
+      <div class="brand" role="img" aria-label="Finovaan">
+        <!-- Logo: ensure assets/FINOVAAN-LOGO.png exists in repo -->
+        <img src="assets/FINOVAAN-LOGO.png" alt="Finovaan logo" width="120" height="34" loading="lazy">
         <h1>Finovaan</h1>
       </div>
 
-      <nav class="primary-nav" role="navigation" aria-label="Primary navigation">
-        <div class="nav-actions" role="group" aria-label="Actions">
-          <!-- Language toggle (stub) -->
-          <button class="lang-toggle" id="langToggle" aria-pressed="false" aria-label="Toggle language">
-            EN
-          </button>
+      <nav class="primary" role="navigation" aria-label="Primary navigation">
+        <div class="nav-actions" role="group" aria-label="Header actions">
+          <!-- Language toggle (UI only) -->
+          <button class="lang-toggle" id="langToggle" aria-pressed="false" aria-label="Toggle language">EN</button>
 
           <!-- Theme toggle -->
-          <button class="theme-toggle" id="themeToggle" aria-pressed="false" aria-label="Toggle dark mode">
-            🌓
-          </button>
+          <button class="theme-toggle" id="themeToggle" aria-pressed="false" aria-label="Toggle theme">🌓</button>
 
-          <!-- Mobile menu button (minimal JS) -->
-          <button id="menuBtn" class="btn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu">
-            ☰
-          </button>
+          <!-- CTAs -->
+          <a class="btn" href="https://www.linkedin.com/company/finovaan" target="_blank" rel="noopener noreferrer" aria-label="Finovaan LinkedIn">LinkedIn</a>
+          <a class="btn primary" href="https://youtube.com/@finovaan" target="_blank" rel="noopener noreferrer" aria-label="Finovaan YouTube">Visit Channel</a>
         </div>
       </nav>
     </div>
   </header>
 
-  <!-- Main content -->
+  <!-- Main -->
   <main id="main-content" tabindex="-1">
-    <section class="hero container" aria-labelledby="hero-heading">
-      <!-- Left: Hero content -->
-      <article class="hero-inner" aria-labelledby="hero-heading" role="article">
-        <h2 id="hero-heading" class="hero-title">Finovaan — Financial clarity, fast.</h2>
-        <p class="hero-lead">
-          Bite-sized lessons, practical analysis, and curated insights about banking, personal finance,
-          and fintech — designed for learners and practitioners. Short videos, deep threads, and
-          event-friendly resources.
-        </p>
+    <div class="container">
+      <section class="hero" aria-labelledby="hero-heading">
+        <!-- Main content column -->
+        <article class="hero-card hero-card-left">
+          <h2 id="hero-heading" class="hero-title">Finovaan — Financial clarity, fast.</h2>
+          <p class="hero-lead">
+            Bite-sized lessons, practical analysis, and curated insights about banking, personal finance,
+            and fintech — designed for learners and practitioners. Short videos, deep threads, and
+            event-friendly resources to grow your financial thinking.
+          </p>
 
-        <div class="hero-ctas" role="group" aria-label="Primary call to actions">
-          <a class="btn primary" href="https://youtube.com/@finovaan" target="_blank" rel="noopener noreferrer" aria-label="Visit Finovaan YouTube channel">
-            Visit Channel
-          </a>
-          <a class="btn ghost" href="https://t.me/finovaan" target="_blank" rel="noopener noreferrer" aria-label="Contact Finovaan on Telegram">
-            Contact
-          </a>
-        </div>
-
-        <!-- Social cards (mobile / desktop) -->
-        <div style="margin-top:18px">
-          <div class="social-grid" role="list" aria-label="Finovaan social channels">
-            <!-- LinkedIn -->
-            <a class="social-card" role="listitem" href="https://www.linkedin.com/company/finovaan" target="_blank" rel="noopener noreferrer" aria-label="Finovaan on LinkedIn" tabindex="0">
-              <div class="social-icon" aria-hidden="true">
-                <!-- LinkedIn SVG -->
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="2" y="2" width="20" height="20" rx="3" fill="white" fill-opacity="0.06"/>
-                  <path d="M6.94 9H9.14V18H6.94zM8.04 6.88a1.12 1.12 0 11.002-2.236A1.12 1.12 0 018.04 6.88zM10.6 9h2v1.2h.03c.28-.52.98-1.07 2.02-1.07 2.16 0 2.56 1.42 2.56 3.26V18h-2.2v-3.9c0-.93-.02-2.13-1.3-2.13-1.3 0-1.5 1.02-1.5 2.05V18H10.6z" fill="currentColor"/>
-                </svg>
-              </div>
-              <div class="social-meta">
-                <div class="social-title">LinkedIn</div>
-                <div class="social-sub">/company/finovaan</div>
-              </div>
-            </a>
-
-            <!-- YouTube -->
-            <a class="social-card" role="listitem" href="https://youtube.com/@finovaan" target="_blank" rel="noopener noreferrer" aria-label="Finovaan on YouTube" tabindex="0">
-              <div class="social-icon" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="2" y="2" width="20" height="20" rx="3" fill="white" fill-opacity="0.06"/>
-                  <path d="M10 8.5v7l6-3.5-6-3.5z" fill="currentColor"/>
-                </svg>
-              </div>
-              <div class="social-meta">
-                <div class="social-title">YouTube</div>
-                <div class="social-sub">@finovaan</div>
-              </div>
-            </a>
-
-            <!-- Instagram -->
-            <a class="social-card" role="listitem" href="https://www.instagram.com/finovaan?igsh=MXBpdW5lbnM4Mm9uOA==" target="_blank" rel="noopener noreferrer" aria-label="Finovaan on Instagram" tabindex="0">
-              <div class="social-icon" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="2" y="2" width="20" height="20" rx="4" fill="white" fill-opacity="0.06"/>
-                  <path d="M7 7h10v10H7z" stroke="currentColor" stroke-width="1.2" fill="none"/>
-                  <circle cx="12" cy="12" r="2.6" fill="currentColor"/>
-                  <circle cx="17.2" cy="6.8" r="0.6" fill="currentColor"/>
-                </svg>
-              </div>
-              <div class="social-meta">
-                <div class="social-title">Instagram</div>
-                <div class="social-sub">@finovaan</div>
-              </div>
-            </a>
-
-            <!-- Telegram -->
-            <a class="social-card" role="listitem" href="https://t.me/finovaan" target="_blank" rel="noopener noreferrer" aria-label="Finovaan on Telegram" tabindex="0">
-              <div class="social-icon" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="2" y="2" width="20" height="20" rx="3" fill="white" fill-opacity="0.06"/>
-                  <path d="M20 4L4 11.5l4 1.5L8 20l4.5-3 4.5 3-1-6.5L20 4z" fill="currentColor" />
-                </svg>
-              </div>
-              <div class="social-meta">
-                <div class="social-title">Telegram</div>
-                <div class="social-sub">@finovaan</div>
-              </div>
-            </a>
+          <div class="cta-group" role="group" aria-label="Primary call to actions">
+            <a class="btn primary" href="https://youtube.com/@finovaan" target="_blank" rel="noopener noreferrer" aria-label="Visit Finovaan YouTube channel">Visit Channel</a>
+            <a class="btn ghost" href="https://t.me/finovaan" target="_blank" rel="noopener noreferrer" aria-label="Contact Finovaan on Telegram">Contact</a>
+            <a class="btn" href="https://www.linkedin.com/company/finovaan" target="_blank" rel="noopener noreferrer" aria-label="Finovaan on LinkedIn">LinkedIn</a>
           </div>
-        </div>
-      </article>
 
-      <!-- Right: Event / QR / small info card -->
-      <aside aria-label="Event QR and quick info" class="hero-inner" role="complementary">
-        <div class="event-card">
-          <div>
-            <h3 style="margin:0 0 6px;font-size:16px">Scan at events</h3>
-            <p style="margin:0 0 8px;color:var(--muted);font-size:13px">Scan this QR to quickly open Finovaan on the device.</p>
+          <!-- social cards -->
+          <div style="margin-top:18px">
+            <div class="social-grid" role="list" aria-label="Finovaan social channels">
+              <!-- LinkedIn -->
+              <a class="social-card" role="listitem" href="https://www.linkedin.com/company/finovaan" target="_blank" rel="noopener noreferrer" aria-label="Finovaan on LinkedIn" tabindex="0">
+                <div class="social-icon" aria-hidden="true">
+                  <!-- Inline SVG for LinkedIn icon -->
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="20" height="20" rx="3" fill="white" fill-opacity="0.04"/>
+                    <path d="M6.94 9H9.14V18H6.94zM8.04 6.88a1.12 1.12 0 11.002-2.236A1.12 1.12 0 018.04 6.88zM10.6 9h2v1.2h.03c.28-.52.98-1.07 2.02-1.07 2.16 0 2.56 1.42 2.56 3.26V18h-2.2v-3.9c0-.93-.02-2.13-1.3-2.13-1.3 0-1.5 1.02-1.5 2.05V18H10.6z" fill="currentColor"/>
+                  </svg>
+                </div>
+                <div class="social-meta">
+                  <div class="social-title">LinkedIn</div>
+                  <div class="social-sub">/company/finovaan</div>
+                </div>
+              </a>
 
-            <!-- QR placeholder (data URI image). Replace with a real QR generator pointing to your final site URL.
-                 Suggestion: Use an external tool (e.g., https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://example.com)
-                 Save as /assets/QR-PLACEHOLDER.png and replace the src below. Keep width/height attributes for performance. -->
-            <div class="qr" role="img" aria-label="QR code linking to site root">
-              <img src="data:image/svg+xml;utf8,
-                %3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E
-                %3Crect width='100%25' height='100%25' fill='%230f172a'/%3E
-                %3Crect x='20' y='20' width='40' height='40' fill='%23ffffff'/%3E
-                %3Crect x='140' y='20' width='40' height='40' fill='%23ffffff'/%3E
-                %3Crect x='20' y='140' width='40' height='40' fill='%23ffffff'/%3E
-                %3Crect x='80' y='80' width='12' height='12' fill='%23ffffff'/%3E
-                %3Crect x='100' y='80' width='12' height='12' fill='%23ffffff'/%3E
-                %3Crect x='80' y='100' width='12' height='12' fill='%23ffffff'/%3E
-                %3C/svg%3E" alt="QR code placeholder" width="84" height="84" loading="lazy">
+              <!-- YouTube -->
+              <a class="social-card" role="listitem" href="https://youtube.com/@finovaan" target="_blank" rel="noopener noreferrer" aria-label="Finovaan on YouTube" tabindex="0">
+                <div class="social-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="20" height="20" rx="3" fill="white" fill-opacity="0.04"/>
+                    <path d="M10 8.5v7l6-3.5-6-3.5z" fill="currentColor"/>
+                  </svg>
+                </div>
+                <div class="social-meta">
+                  <div class="social-title">YouTube</div>
+                  <div class="social-sub">@finovaan</div>
+                </div>
+              </a>
+
+              <!-- Instagram -->
+              <a class="social-card" role="listitem" href="https://www.instagram.com/finovaan?igsh=MXBpdW5lbnM4Mm9uOA==" target="_blank" rel="noopener noreferrer" aria-label="Finovaan on Instagram" tabindex="0">
+                <div class="social-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="20" height="20" rx="4" fill="white" fill-opacity="0.04"/>
+                    <path d="M7 7h10v10H7z" stroke="currentColor" stroke-width="1.2" fill="none"/>
+                    <circle cx="12" cy="12" r="2.6" fill="currentColor"/>
+                    <circle cx="17.2" cy="6.8" r="0.6" fill="currentColor"/>
+                  </svg>
+                </div>
+                <div class="social-meta">
+                  <div class="social-title">Instagram</div>
+                  <div class="social-sub">@finovaan</div>
+                </div>
+              </a>
+
+              <!-- Telegram -->
+              <a class="social-card" role="listitem" href="https://t.me/finovaan" target="_blank" rel="noopener noreferrer" aria-label="Finovaan on Telegram" tabindex="0">
+                <div class="social-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="20" height="20" rx="3" fill="white" fill-opacity="0.04"/>
+                    <path d="M20 4L4 11.5l4 1.5L8 20l4.5-3 4.5 3-1-6.5L20 4z" fill="currentColor" />
+                  </svg>
+                </div>
+                <div class="social-meta">
+                  <div class="social-title">Telegram</div>
+                  <div class="social-sub">@finovaan</div>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <!-- Informational / SEO content -->
+          <div class="content-block" aria-labelledby="about-heading">
+            <h3 id="about-heading" style="margin-top:0">About Finovaan</h3>
+            <p class="muted" style="margin:0">
+              Finovaan produces concise, actionable content on personal finance, banking operations, and the evolving fintech landscape.
+              We focus on clarity, applied examples, and practical takeaways for learners and professionals alike.
+            </p>
+          </div>
+
+          <!-- Feature grid -->
+          <div class="content-grid" style="margin-top:12px">
+            <div class="feature" role="article" aria-label="Short videos">
+              <h4>Short Videos</h4>
+              <p>Practical walkthroughs and short explainers for quick learning — perfect for commuters and students.</p>
+            </div>
+            <div class="feature" role="article" aria-label="Deep threads">
+              <h4>Deep Threads</h4>
+              <p>Threaded analyses and case studies breaking down complex topics into actionable steps.</p>
+            </div>
+            <div class="feature" role="article" aria-label="Event resources">
+              <h4>Event Resources</h4>
+              <p>Downloadable guides and QR-ready links to share at meetups and workshops.</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Right column: QR + quick links -->
+        <aside class="hero-card hero-card-right" role="complementary" aria-label="Quick access and QR">
+          <div class="event-card" role="region" aria-label="Event QR">
+            <div>
+              <h3 style="margin:0 0 6px;font-size:16px">Scan at events</h3>
+              <p class="muted" style="margin:0 0 8px;font-size:13px">Scan this QR to quickly open Finovaan on the device.</p>
+              <div class="quick-links" style="margin-top:8px;">
+                <a class="btn" href="https://youtube.com/@finovaan" target="_blank" rel="noopener noreferrer">YouTube</a>
+                <a class="btn" href="https://www.instagram.com/finovaan?igsh=MXBpdW5lbnM4Mm9uOA==" target="_blank" rel="noopener noreferrer">Instagram</a>
+              </div>
+            </div>
+
+            <!-- QR: replace with real QR image in assets/QR-PLACEHOLDER.png -->
+            <div class="qr" aria-hidden="false" role="img" aria-label="QR code linking to site root">
+              <img src="assets/QR-PLACEHOLDER.png" alt="Finovaan QR code" width="84" height="84" loading="lazy">
+            </div>
+          </div>
+
+          <div style="margin-top:14px">
+            <p class="muted" style="margin:0 0 8px">Quick links</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <a class="btn" href="https://www.linkedin.com/company/finovaan" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+              <a class="btn" href="https://youtube.com/@finovaan" target="_blank" rel="noopener noreferrer">YouTube</a>
+              <a class="btn" href="https://t.me/finovaan" target="_blank" rel="noopener noreferrer">Telegram</a>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <!-- Additional SEO content (indexable) -->
+      <section style="margin-top:20px" aria-label="More about Finovaan">
+        <div class="hero-card content-block">
+          <h3 style="margin-top:0">What we cover</h3>
+          <p class="muted">
+            Topics include: Banking fundamentals, risk and compliance, personal finance strategies, fintech product breakdowns,
+            career guidance for finance and engineering students, and practical tools for analysis.
+          </p>
+
+          <div style="margin-top:12px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+            <div style="background:var(--glass);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)">
+              <h4 style="margin:0 0 6px">For students</h4>
+              <p class="muted" style="margin:0">Concise exam prep, CFA pointers, and practical exercises.</p>
+            </div>
+            <div style="background:var(--glass);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)">
+              <h4 style="margin:0 0 6px">For practitioners</h4>
+              <p class="muted" style="margin:0">Operational insights, fintech product audits, and security best practices.</p>
             </div>
           </div>
         </div>
-
-        <div style="margin-top:14px">
-          <p style="margin:0;color:var(--muted);font-size:13px">Quick links</p>
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <a class="btn" href="https://www.linkedin.com/company/finovaan" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <a class="btn" href="https://youtube.com/@finovaan" target="_blank" rel="noopener noreferrer">YouTube</a>
-          </div>
-        </div>
-      </aside>
-    </section>
-
-    <!-- Additional content area for SEO / indexable text -->
-    <section aria-labelledby="about-heading" style="margin-top:20px">
-      <div class="hero-inner" style="padding:18px">
-        <h3 id="about-heading" style="margin-top:0;font-size:16px">About Finovaan</h3>
-        <p style="margin:0;color:var(--muted);max-width:70ch">
-          Finovaan produces concise, actionable content on personal finance, banking operations, and the
-          evolving fintech landscape. We focus on clarity, applied examples, and practical takeaways for
-          learners and professionals alike.
-        </p>
-      </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="site-footer" role="contentinfo">
-      <div class="container footer-inner">
-        <div style="display:flex;gap:12px;align-items:center">
-          <img src="FINOVAAN-LOGO.svg" alt="Finovaan logo small" width="80" height="22" loading="lazy">
-          <div style="font-weight:600">Finovaan</div>
-        </div>
-
-        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
-          <a href="https://www.linkedin.com/company/finovaan" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-          <a href="https://youtube.com/@finovaan" target="_blank" rel="noopener noreferrer">YouTube</a>
-          <a href="https://www.instagram.com/finovaan?igsh=MXBpdW5lbnM4Mm9uOA==" target="_blank" rel="noopener noreferrer">Instagram</a>
-          <a href="https://t.me/finovaan" target="_blank" rel="noopener noreferrer">Telegram</a>
-        </div>
-
-        <small style="color:var(--muted)">© <span id="year"></span> Finovaan. All rights reserved.</small>
-      </div>
-    </footer>
+      </section>
+    </div>
   </main>
 
-  <!-- Minimal JS: theme toggle, language stub, mobile menu toggle -->
+  <!-- Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+      <img class="small-logo" src="assets/FINOVAAN-LOGO.png" alt="Finovaan logo small" width="90" height="26" loading="lazy">
+      <div class="footer-links" role="navigation" aria-label="Footer links">
+        <a href="https://www.linkedin.com/company/finovaan" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a href="https://youtube.com/@finovaan" target="_blank" rel="noopener noreferrer">YouTube</a>
+        <a href="https://www.instagram.com/finovaan?igsh=MXBpdW5lbnM4Mm9uOA==" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://t.me/finovaan" target="_blank" rel="noopener noreferrer">Telegram</a>
+      </div>
+      <small style="color:var(--muted)">© <span id="year"></span> Finovaan. All rights reserved.</small>
+    </div>
+  </footer>
+
+  <!-- Minimal JS (accessible, light): theme toggle, language stub, mobile menu stub -->
   <script>
-    // Theme toggle: respects system preference and toggles data-theme on <html>
+    // Year fill
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Theme toggle (persists to localStorage)
     (function(){
       const root = document.documentElement;
       const themeToggle = document.getElementById('themeToggle');
+      const saved = localStorage.getItem('finovaan:theme'); // 'light' or 'dark'
       const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-      // Initialize from localStorage or system
-      const saved = localStorage.getItem('finovaan:theme');
       const initial = saved ? saved : (prefersDark ? 'dark' : 'light');
-      if(initial === 'dark') root.setAttribute('data-theme','dark');
 
-      function updateButton(){
-        const isDark = root.getAttribute('data-theme') === 'dark';
-        themeToggle.setAttribute('aria-pressed', String(isDark));
-        themeToggle.textContent = isDark ? '🌙' : '☀️';
+      if(initial === 'light') {
+        root.setAttribute('data-theme','light');
+        themeToggle.setAttribute('aria-pressed','true');
+        themeToggle.textContent = '☀️';
+      } else {
+        root.removeAttribute('data-theme');
+        themeToggle.setAttribute('aria-pressed','false');
+        themeToggle.textContent = '🌙';
       }
-      updateButton();
 
-      themeToggle.addEventListener('click', () => {
-        const isDark = root.getAttribute('data-theme') === 'dark';
-        root.setAttribute('data-theme', isDark ? 'light' : 'dark');
-        localStorage.setItem('finovaan:theme', isDark ? 'light' : 'dark');
-        updateButton();
+      themeToggle.addEventListener('click', function(){
+        const isLight = root.getAttribute('data-theme') === 'light';
+        if(isLight){
+          root.removeAttribute('data-theme');
+          localStorage.setItem('finovaan:theme','dark');
+          themeToggle.textContent = '🌙';
+          themeToggle.setAttribute('aria-pressed','false');
+        } else {
+          root.setAttribute('data-theme','light');
+          localStorage.setItem('finovaan:theme','light');
+          themeToggle.textContent = '☀️';
+          themeToggle.setAttribute('aria-pressed','true');
+        }
       });
     })();
 
-    // Language toggle stub (EN/FA) - only UI; integrate backend/i18n as needed
+    // Language toggle (UI only — integrate real i18n later)
     (function(){
-      const langBtn = document.getElementById('langToggle');
+      const btn = document.getElementById('langToggle');
       let current = 'en';
-      langBtn.addEventListener('click', () => {
+      btn.addEventListener('click', function(){
         current = current === 'en' ? 'fa' : 'en';
-        langBtn.textContent = current.toUpperCase();
-        langBtn.setAttribute('aria-pressed', String(current === 'fa'));
-        // NOTE: Hook your i18n or reload localized content here.
+        btn.textContent = current.toUpperCase();
+        btn.setAttribute('aria-pressed', String(current === 'fa'));
+        // TODO: hook into localization logic (swap content or redirect)
       });
     })();
 
-    // Simple mobile menu toggle (no menu content in this layout; left as small accessible stub)
+    // Mobile menu stub (for accessibility)
     (function(){
-      const btn = document.getElementById('menuBtn');
-      btn.addEventListener('click', () => {
-        const expanded = btn.getAttribute('aria-expanded') === 'true';
-        btn.setAttribute('aria-expanded', String(!expanded));
-        // Implement mobile navigation drawer/opening here if you add a mobile menu
-      });
+      const menuBtn = document.getElementById('menuBtn');
+      if(menuBtn){
+        menuBtn.addEventListener('click', function(){
+          const expanded = menuBtn.getAttribute('aria-expanded') === 'true';
+          menuBtn.setAttribute('aria-expanded', String(!expanded));
+          // Implement a drawer if needed
+        });
+      }
     })();
-
-    // Fill year
-    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
-
-  <!-- End of file -->
 </body>
 </html>
